@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_todo_list/constants/constants.dart';
+import 'package:my_todo_list/core/widgets/dialogs.dart';
+import 'package:my_todo_list/features/home_screen/ui/cubit/cubit/todo_cubit.dart';
 import 'package:my_todo_list/features/home_screen/ui/widgets/add_todo.dart';
 import 'package:my_todo_list/features/home_screen/ui/widgets/todo_list.dart';
+import 'package:my_todo_list/injection_container.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -56,7 +60,27 @@ class HomeScreen extends StatelessWidget {
                   topLeft: Radius.circular(20),
                 ),
               ),
-              child: const TodoList(),
+              child: BlocConsumer<TodoCubit, TodoCubitState>(
+                bloc: sl<TodoCubit>(),
+                listener: (context, state) {
+                  if (state is TodoCubitErrorState) {
+                    Dialogs.buildSnackBar(context, state.message);
+                  } else if (state is TodoCubitSuccessState) {
+                    Dialogs.buildSnackBar(context, state.message);
+                  }
+                },
+                builder: (context, state) {
+                  if (state is TodoCubitLoadingState) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is TodoCubitLoadedState) {
+                    return TodoList(state: state);
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
             ),
           )
         ],

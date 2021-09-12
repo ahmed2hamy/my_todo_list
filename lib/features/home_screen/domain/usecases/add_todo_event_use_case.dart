@@ -6,10 +6,10 @@ import 'package:my_todo_list/core/usecases/usecase.dart';
 import 'package:my_todo_list/features/home_screen/domain/entities/todo.dart';
 import 'package:my_todo_list/features/home_screen/domain/repository/todo_repository.dart';
 
-class AddTodoEvent implements UseCase<SuccessModel, Params> {
+class AddTodoEventUseCase implements UseCase<SuccessModel, Params> {
   final TodoRepository repository;
 
-  AddTodoEvent(this.repository);
+  AddTodoEventUseCase(this.repository);
 
   @override
   Future<Either<Failure, SuccessModel>> call(Params params) async {

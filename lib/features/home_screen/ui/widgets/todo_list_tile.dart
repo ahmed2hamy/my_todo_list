@@ -1,31 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:my_todo_list/constants/constants.dart';
+import 'package:my_todo_list/core/widgets/dialogs.dart';
+import 'package:my_todo_list/features/home_screen/domain/entities/todo.dart';
 
 class TodoListTile extends StatelessWidget {
-  final String taskName;
-  final bool isChecked;
-  final Function(bool?) checkBoxCallback;
+  final Todo todo;
 
-  const TodoListTile(
-      {Key? key,
-      required this.taskName,
-      required this.isChecked,
-      required this.checkBoxCallback})
-      : super(key: key);
+  const TodoListTile({
+    Key? key,
+    required this.todo,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        taskName,
-        style: kBodyText.copyWith(
+    return Dismissible(
+      key: Key(todo.title),
+      // onDismissed: (_) {
+      //   // provider.deleteIndex(index: ind);
+      //   Dialogs.buildSnackBar(context, Strings.itemDeleted);
+      // },
+      background: Container(color: Colors.red),
+      child: ListTile(
+        title: Text(
+          todo.title,
+          style: kBodyText.copyWith(
             color: Colors.black,
-            decoration: isChecked ? TextDecoration.lineThrough : null),
-      ),
-      trailing: Checkbox(
-        activeColor: Colors.lightBlueAccent,
-        value: isChecked,
-        onChanged: checkBoxCallback,
+            decoration: todo.isChecked ? TextDecoration.lineThrough : null,
+          ),
+        ),
+        trailing: Checkbox(
+          activeColor: Colors.lightBlueAccent,
+          value: todo.isChecked,
+          onChanged: (isChecked) {
+            // provider.updateList(todo);
+          },
+        ),
       ),
     );
   }

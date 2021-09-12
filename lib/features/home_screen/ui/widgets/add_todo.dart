@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_todo_list/constants/constants.dart';
-import 'package:my_todo_list/features/home_screen/ui/provider/todos_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:my_todo_list/features/home_screen/domain/entities/todo.dart';
+import 'package:my_todo_list/features/home_screen/ui/cubit/cubit/todo_cubit.dart';
 
 class AddTodo extends StatelessWidget {
   const AddTodo({Key? key}) : super(key: key);
@@ -38,10 +39,11 @@ class AddTodo extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 if (todoTitle.isNotEmpty) {
-                  Provider.of<TodosProvider>(context)
-                      .addToList(title: todoTitle);
+                  await BlocProvider.of<TodoCubit>(context).addTodo(
+                    Todo(title: todoTitle),
+                  );
                   Navigator.pop(context);
                 }
               },

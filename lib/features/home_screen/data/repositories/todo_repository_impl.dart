@@ -2,8 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:my_todo_list/core/error/failures.dart';
 import 'package:my_todo_list/core/models/success_model.dart';
 import 'package:my_todo_list/core/network/network_info.dart';
-import 'package:my_todo_list/features/home_screen/data/data_sources/todo_local_data_source.dart';
-import 'package:my_todo_list/features/home_screen/data/data_sources/todo_remote_data_source.dart';
+import 'package:my_todo_list/features/home_screen/data/data_sources/local/todo_local_data_source.dart';
+import 'package:my_todo_list/features/home_screen/data/data_sources/remote/todo_remote_data_source.dart';
 import 'package:my_todo_list/features/home_screen/data/models/todo_model.dart';
 import 'package:my_todo_list/features/home_screen/domain/entities/todo.dart';
 import 'package:my_todo_list/features/home_screen/domain/repository/todo_repository.dart';
@@ -22,7 +22,7 @@ class TodoRepositoryImpl implements TodoRepository {
   });
 
   @override
-  Future<Either<Failure, TodoModel>> getAllTodos() {
+  Future<Either<Failure, List<TodoModel>>> getAllTodos() {
     throw UnimplementedError();
   }
 

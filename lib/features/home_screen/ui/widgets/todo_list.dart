@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:my_todo_list/features/home_screen/ui/cubit/cubit/todo_cubit.dart';
+import 'package:my_todo_list/features/home_screen/domain/entities/todo.dart';
 import 'package:my_todo_list/features/home_screen/ui/widgets/todo_list_tile.dart';
 
 class TodoList extends StatelessWidget {
-  final TodoCubitLoadedState state;
+  final List<Todo> todosList;
 
   const TodoList({
     Key? key,
-    required this.state,
+    required this.todosList,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: state.todosList.length,
+      itemCount: todosList.length,
       itemBuilder: (context, index) {
-        return TodoListTile(todo: state.todosList[index]);
+        return TodoListTile(todo: todosList[index]);
       },
     );
   }

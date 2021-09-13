@@ -28,12 +28,3 @@ class TodoCubitErrorState extends TodoCubitState {
   @override
   List<Object> get props => [message];
 }
-
-class TodoCubitSuccessState extends TodoCubitState {
-  final String message;
-
-  const TodoCubitSuccessState(this.message);
-
-  @override
-  List<Object> get props => [message];
-}

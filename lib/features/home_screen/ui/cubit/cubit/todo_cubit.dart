@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:my_todo_list/constants/constants.dart';
 import 'package:my_todo_list/core/error/failures.dart';
 import 'package:my_todo_list/core/usecases/usecase.dart';
+import 'package:my_todo_list/features/home_screen/data/models/todo_model.dart';
 import 'package:my_todo_list/features/home_screen/domain/entities/todo.dart';
 import 'package:my_todo_list/features/home_screen/domain/usecases/add_todo_event_use_case.dart';
 import 'package:my_todo_list/features/home_screen/domain/usecases/get_all_todos_use_case.dart';
@@ -18,14 +19,14 @@ class TodoCubit extends Cubit<TodoCubitState> {
     required this.getTodosEvent,
   }) : super(TodoCubitInitialState());
 
-  Future addTodo(Todo todo) async {
+  Future addTodo(TodoModel todoModel) async {
     emit(TodoCubitLoadingState());
 
-    final failureOrSuccess = await addTodoEvent(Params(todo: todo));
+    final failureOrSuccess = await addTodoEvent(Params(todoModel: todoModel));
 
     failureOrSuccess.fold(
         (failure) => emit(TodoCubitErrorState(_mapFailureToMessage(failure))),
-        (suc) => emit(TodoCubitSuccessState(suc.successMessage)));
+        (todos) => emit(TodoCubitLoadedState(todos)));
   }
 
   Future getAllTodos() async {
@@ -34,8 +35,12 @@ class TodoCubit extends Cubit<TodoCubitState> {
     final failureOrTodos = await getTodosEvent(NoParams());
 
     failureOrTodos.fold(
-      (failure) => emit(TodoCubitErrorState(_mapFailureToMessage(failure))),
-      (todos) => emit(TodoCubitLoadedState(todos)),
+      (failure) {
+        emit(TodoCubitErrorState(_mapFailureToMessage(failure)));
+      },
+      (todos) {
+        emit(TodoCubitLoadedState(todos));
+      },
     );
   }
 

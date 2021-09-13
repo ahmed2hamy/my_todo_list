@@ -2,22 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_todo_list/constants/constants.dart';
 import 'package:my_todo_list/core/widgets/dialogs.dart';
+import 'package:my_todo_list/features/home_screen/domain/entities/todo.dart';
 import 'package:my_todo_list/features/home_screen/ui/cubit/cubit/todo_cubit.dart';
 import 'package:my_todo_list/features/home_screen/ui/widgets/add_todo.dart';
 import 'package:my_todo_list/features/home_screen/ui/widgets/todo_list.dart';
 import 'package:my_todo_list/injection_container.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  List<Todo> _todosList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<TodoCubit>(context).getAllTodos();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          TodoCubit cubit = BlocProvider.of<TodoCubit>(context);
           showModalBottomSheet(
             context: context,
-            builder: (_) => const AddTodo(),
+            builder: (_) => AddTodo(cubit: cubit),
           );
         },
         child: const Icon(Icons.add),
@@ -60,22 +75,19 @@ class HomeScreen extends StatelessWidget {
                   topLeft: Radius.circular(20),
                 ),
               ),
-              child: BlocConsumer<TodoCubit, TodoCubitState>(
+              child: BlocBuilder<TodoCubit, TodoCubitState>(
                 bloc: sl<TodoCubit>(),
-                listener: (context, state) {
-                  if (state is TodoCubitErrorState) {
-                    Dialogs.buildSnackBar(context, state.message);
-                  } else if (state is TodoCubitSuccessState) {
-                    Dialogs.buildSnackBar(context, state.message);
-                  }
-                },
                 builder: (context, state) {
                   if (state is TodoCubitLoadingState) {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   } else if (state is TodoCubitLoadedState) {
-                    return TodoList(state: state);
+                    _todosList = state.todosList;
+                    return TodoList(todosList: state.todosList);
+                  } else if (state is TodoCubitErrorState) {
+                    Dialogs.buildSnackBar(context, state.message);
+                    return Container();
                   } else {
                     return Container();
                   }

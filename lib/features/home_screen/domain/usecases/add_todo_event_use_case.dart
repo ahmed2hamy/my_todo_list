@@ -1,27 +1,26 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:my_todo_list/core/error/failures.dart';
-import 'package:my_todo_list/core/models/success_model.dart';
 import 'package:my_todo_list/core/usecases/usecase.dart';
-import 'package:my_todo_list/features/home_screen/domain/entities/todo.dart';
+import 'package:my_todo_list/features/home_screen/data/models/todo_model.dart';
 import 'package:my_todo_list/features/home_screen/domain/repository/todo_repository.dart';
 
-class AddTodoEventUseCase implements UseCase<SuccessModel, Params> {
+class AddTodoEventUseCase implements UseCase<List<TodoModel>, Params> {
   final TodoRepository repository;
 
   AddTodoEventUseCase(this.repository);
 
   @override
-  Future<Either<Failure, SuccessModel>> call(Params params) async {
-    return await repository.addTodoEvent(params.todo);
+  Future<Either<Failure, List<TodoModel>>> call(Params params) async {
+    return await repository.addTodoEvent(params.todoModel);
   }
 }
 
 class Params extends Equatable {
-  final Todo todo;
+  final TodoModel todoModel;
 
-  const Params({required this.todo});
+  const Params({required this.todoModel});
 
   @override
-  List<Object> get props => [todo];
+  List<Object> get props => [todoModel];
 }

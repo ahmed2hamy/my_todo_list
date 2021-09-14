@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:my_todo_list/core/network/network_info.dart';
+import 'package:my_todo_list/core/data/local_datasource/moor/moor_helper.dart';
+import 'package:my_todo_list/core/data/network/network_info.dart';
 import 'package:my_todo_list/features/home_screen/data/data_sources/local/todo_local_data_source.dart';
 import 'package:my_todo_list/features/home_screen/data/data_sources/remote/todo_remote_data_source.dart';
 import 'package:my_todo_list/features/home_screen/data/repositories/todo_repository_impl.dart';
@@ -9,11 +12,14 @@ import 'package:my_todo_list/features/home_screen/domain/repository/todo_reposit
 import 'package:my_todo_list/features/home_screen/domain/usecases/add_todo_event_use_case.dart';
 import 'package:my_todo_list/features/home_screen/domain/usecases/get_all_todos_use_case.dart';
 import 'package:my_todo_list/features/home_screen/ui/cubit/cubit/todo_cubit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  // Services init
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   //! Features
   // Bloc
   sl.registerLazySingleton(
@@ -49,9 +55,8 @@ Future<void> init() async {
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
   //! External
-  final sharedPreferences = await SharedPreferences.getInstance();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  sl.registerLazySingleton(() => sharedPreferences);
-  sl.registerLazySingleton(() => Connectivity());
   sl.registerLazySingleton(() => firestore);
+  sl.registerLazySingleton(() => Connectivity());
+  sl.registerLazySingleton(() => MoorHelper());
 }

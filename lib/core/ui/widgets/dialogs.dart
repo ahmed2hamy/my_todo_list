@@ -10,6 +10,9 @@ class Dialogs {
       content: Text(text),
       duration: Duration(seconds: duration),
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    });
   }
 }

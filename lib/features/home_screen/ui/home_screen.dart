@@ -1,8 +1,10 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_todo_list/constants/constants.dart';
-import 'package:my_todo_list/core/widgets/dialogs.dart';
-import 'package:my_todo_list/features/home_screen/domain/entities/todo.dart';
+import 'package:my_todo_list/core/ui/widgets/dialogs.dart';
 import 'package:my_todo_list/features/home_screen/ui/cubit/cubit/todo_cubit.dart';
 import 'package:my_todo_list/features/home_screen/ui/widgets/add_todo.dart';
 import 'package:my_todo_list/features/home_screen/ui/widgets/todo_list.dart';
@@ -16,12 +18,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Todo> _todosList = [];
+  late StreamSubscription<ConnectivityResult> _subscription;
 
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<TodoCubit>(context).getAllTodos();
+
+    _subscription = sl<Connectivity>().onConnectivityChanged.listen((_) {
+      BlocProvider.of<TodoCubit>(context).getAllTodos();
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -83,7 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: CircularProgressIndicator(),
                     );
                   } else if (state is TodoCubitLoadedState) {
-                    _todosList = state.todosList;
                     return TodoList(todosList: state.todosList);
                   } else if (state is TodoCubitErrorState) {
                     Dialogs.buildSnackBar(context, state.message);

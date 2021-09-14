@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:my_todo_list/constants/constants.dart';
-import 'package:my_todo_list/core/error/failures.dart';
-import 'package:my_todo_list/core/usecases/usecase.dart';
+import 'package:my_todo_list/core/domain/error/failures.dart';
+import 'package:my_todo_list/core/domain/usecases/usecase.dart';
 import 'package:my_todo_list/features/home_screen/data/models/todo_model.dart';
 import 'package:my_todo_list/features/home_screen/domain/entities/todo.dart';
 import 'package:my_todo_list/features/home_screen/domain/usecases/add_todo_event_use_case.dart';

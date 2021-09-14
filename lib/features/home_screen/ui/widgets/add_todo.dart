@@ -43,7 +43,10 @@ class AddTodo extends StatelessWidget {
               onPressed: () async {
                 if (todoTitle.isNotEmpty) {
                   await cubit.addTodo(
-                    TodoModel(title: todoTitle),
+                    TodoModel(
+                      dateCreated: DateTime.now(),
+                      title: todoTitle,
+                    ),
                   );
                   Navigator.pop(context);
                 }
